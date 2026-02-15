@@ -1,0 +1,21 @@
+{
+  "name": "bootcamp-api",
+  "version": "1.0.0",
+  "description": "Bootcamp backend API",
+  "license": "ISC",
+  "author": "Bonnie Owens",
+  "type": "commonjs",
+  "main": "server.ts",
+  "scripts": {
+    "start": "NODE_ENV=production node dist/server.js",
+    "dev": "nodemon server",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}
