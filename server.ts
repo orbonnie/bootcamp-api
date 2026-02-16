@@ -2,6 +2,7 @@ import express, {Request, Response, NextFunction} from 'express';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
 import chalk from 'chalk';
+import qs from 'qs';
 // import {logger} from './middleware/logger';
 
 dotenv.config({path: './config/config.env'});
@@ -20,6 +21,8 @@ import { errorHandler } from './middleware/error';
 const app = express();
 
 app.use(express.json());
+
+app.set('query parser', (str: string) => qs.parse(str));
 
 // Middleware
 if(ENV === 'development') {
