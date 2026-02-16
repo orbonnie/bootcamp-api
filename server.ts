@@ -1,21 +1,48 @@
-import express, {Request, Response} from 'express';
+import express, {Request, Response, NextFunction} from 'express';
 import dotenv from 'dotenv';
-
-// Routes
-import bootcamps from './routes/bootcamps';
+import morgan from 'morgan';
+import chalk from 'chalk';
+// import {logger} from './middleware/logger';
 
 dotenv.config({path: './config/config.env'});
 
+const PORT = process.env.PORT || 3000;
+const ENV = process.env.NODE_ENV || 'development';
+
+// Connect to database
+import connectDB from './config/db'
+connectDB();
+
+// Routes
+import bootcamps from './routes/bootcamps';
+import { errorHandler } from './middleware/error';
+
 const app = express();
 
+app.use(express.json());
+
+// Middleware
+if(ENV === 'development') {
+  app.use(morgan('dev'));
+}
+
+// app.use(logger);
+
 // Mount Routers
+app.use('/api/v1/bootcamps', bootcamps);
 
-app.use('/api/v1/bootcamps', bootcamps)
+app.use(errorHandler);
 
-const PORT = process.env.PORT || 3000
-const ENV = process.env.NODE_ENV || 'development'
-
-app.listen(
-    PORT,
-    () => console.log(`Server running in ${ENV} on port ${PORT}`)
+const server = app.listen(
+  PORT,
+  () => console.log(chalk.yellow.bold(`Server running in ${ENV} on port ${PORT}`))
 );
+
+// Catch promise rejections
+process.on('unhandledRejection', (err: Error, promise: Promise<any>) => {
+  console.log(chalk.red(`Error: ${err.message}`))
+  console.log(`${err.stack}`);
+  server.close(() => process.exit(1))
+});
+
+
