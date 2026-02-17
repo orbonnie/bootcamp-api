@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import slugify from "slugify";
 import geocoder from "../utils/geocoder";
+import { getBootcamp } from "../controllers/bootcamps";
+import Course from './Course';
 
 const BootcampSchema = new mongoose.Schema({
   name: {
@@ -72,12 +74,10 @@ const BootcampSchema = new mongoose.Schema({
     min: [1, "Rating must be at least 1"],
     max: [10, "Rating cannot exceed 10"],
   },
-  averageCost: {
-    type: Number
-    // photo: {
-    //   type: String,
-    //   default: "no-photo.jpg",
-    // },
+  averageCost: Number,
+  photo: {
+    type: String,
+    default: "no-photo.jpg",
   },
   housing: {
     type: Boolean,
@@ -99,7 +99,12 @@ const BootcampSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-});
+},
+{
+  toJSON: {virtuals: true},
+  toObject: {virtuals: true}
+}
+);
 
 // Create bootcamp slug
 BootcampSchema.pre('save', function() {
@@ -119,7 +124,21 @@ BootcampSchema.pre('save', async function(){
     zipcode: loc[0].zipcode,
     country: loc[0].countryCode
   } as any;
+});
 
+// Cascade delete courses on bootcamp removal
+BootcampSchema.pre('findOneAndDelete', async function(){
+  const bootcampId = this.getQuery()._id;
+  console.log(`Courses being removed from bootcamp ${bootcampId}`);
+  await Course.deleteMany({bootcamp: bootcampId});
+});
+
+// Reverse populate with schema
+BootcampSchema.virtual('courses', {
+  ref: 'Course',
+  localField: '_id',
+  foreignField: 'bootcamp',
+  justOne: false
 });
 
 export default mongoose.model('Bootcamp', BootcampSchema);

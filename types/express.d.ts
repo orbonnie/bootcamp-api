@@ -1,7 +1,12 @@
-import 'express-serve-static-core';
+import "express-serve-static-core";
 
-declare module 'express-serve-static-core' {
-  interface Request {
-    hello?: string;
+declare module "express-serve-static-core" {
+  interface Response {
+    advancedResults?: {
+      success: boolean;
+      count: number;
+      pagination: Pagination;
+      data: any[];
+    };
   }
 }

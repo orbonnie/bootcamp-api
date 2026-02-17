@@ -16,6 +16,8 @@ connectDB();
 
 // Routes
 import bootcamps from './routes/bootcamps';
+import courses from './routes/courses';
+
 import { errorHandler } from './middleware/error';
 
 const app = express();
@@ -33,6 +35,7 @@ if(ENV === 'development') {
 
 // Mount Routers
 app.use('/api/v1/bootcamps', bootcamps);
+app.use('/api/v1/courses', courses);
 
 app.use(errorHandler);
 

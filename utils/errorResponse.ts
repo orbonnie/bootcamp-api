@@ -1,4 +1,4 @@
-export class ErrorResponse extends Error {
+class ErrorResponse extends Error {
     statusCode: number;
 
     constructor(message: string, statusCode: number) {
@@ -6,3 +6,5 @@ export class ErrorResponse extends Error {
         this.statusCode = statusCode;
     }
 }
+
+export default ErrorResponse;

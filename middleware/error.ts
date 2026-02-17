@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import chalk from 'chalk';
-import { ErrorResponse } from '../utils/errorResponse';
+import ErrorResponse from '../utils/errorResponse';
 
 export const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
   let error = err;
